@@ -28,7 +28,11 @@ class ChessMaster(object):
         return position
 
     def black_is_in_checkmate(self):
-        black_king_pos = self._get_piece_position('kd')
+        try:
+            black_king_pos = self._get_piece_position('kd')[0]
+        except IndexError:
+            raise ChessMasterException("No black king present, "
+                                       "hence checkmate is not valid.")
         white_piece_pos = self._get_piece_position('nl')
         if any([abs(wpos[0] - black_king_pos[0]) == 0 and 
                 abs(wpos[1] - black_king_pos[1]) == 0
@@ -39,7 +43,7 @@ class ChessMaster(object):
 
     def white_can_mate_in_one_move(self):
         result = self.make_white_mate_move()
-        if len(result) == 2:
+        if len(result) == 2 and result[1]:
             return True
         else:
             return False
@@ -121,7 +125,7 @@ class ChessMaster(object):
     def to_string(self):
         board_string = ""
         for row in self.board:
-            board_string += "|" + "|".join(row) + " |=\n"
+            board_string += "|" + "|".join(row) + "|=\n"
         return board_string
 
 
